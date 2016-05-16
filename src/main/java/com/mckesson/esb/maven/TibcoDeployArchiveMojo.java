@@ -30,42 +30,18 @@ public class TibcoDeployArchiveMojo extends AbstractMojo {
     public void execute() throws MojoExecutionException, MojoFailureException {
 
         getLog().info("Deploy Archive");
-        StringBuffer result = new StringBuffer();
+        String url = "http://localhost:8079/bw/v1/";
+
+        TibcoBusinessWorksClient client = new RestTibcoBusinessWorksClient(url);
 
         try {
-            String url = "http://localhost:8079/bw/v1/domains/MikeDomain/archives";
-            URIBuilder uriBuilder = new URIBuilder(url);
-            uriBuilder.setParameter("replace", "true");
-
-            HttpClient client = HttpClientBuilder.create().build();
-            HttpPost post = new HttpPost(uriBuilder.build());
-
             File file = new File("/Users/Zatko/Desktop/TestModule_1.0.0.ear");
+            String deployResponse = client.deployArchive("MikeDomain", file);
+            getLog().info("Archives::\n" + deployResponse);
 
-            MultipartEntityBuilder builder = MultipartEntityBuilder.create();
-            builder.addBinaryBody("file", file, ContentType.APPLICATION_OCTET_STREAM, "TestModule_1.0.0.ear");
-
-            HttpEntity entity = builder.build();
-            post.setEntity(entity);
-
-            //request.addHeader("User-Agent", USER_AGENT);
-            HttpResponse response = client.execute(post);
-
-            getLog().info("Response Code : "
-                    + response.getStatusLine().getStatusCode());
-
-            BufferedReader rd = new BufferedReader(
-                    new InputStreamReader(response.getEntity().getContent()));
-
-            String line = "";
-            while ((line = rd.readLine()) != null) {
-                result.append(line);
-            }
-
-        } catch(Exception e) {
-
+        } catch (TibcoBusinessWorksClientException e) {
+            getLog().error(e);
         }
 
-        getLog().info(result);
     }
 }

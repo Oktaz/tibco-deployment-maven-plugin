@@ -1,9 +1,7 @@
 import com.mckesson.esb.maven.TibcoDeployArchiveMojo;
-import org.apache.commons.io.IOUtils;
-import org.apache.maven.plugin.testing.AbstractMojoTestCase;
+import com.mckesson.esb.maven.TibcoDeploymentMojo;
 import org.apache.maven.plugin.testing.MojoRule;
-import org.apache.maven.plugin.testing.WithoutMojo;
-import org.junit.Ignore;
+import org.apache.maven.plugin.testing.resources.TestResources;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -18,44 +16,25 @@ import static org.junit.Assert.assertTrue;
 public class DeploymentMojoTest {
 
     @Rule
-    public MojoRule rule = new MojoRule()
-    {
-        @Override
-        protected void before() throws Throwable
-        {
-        }
+    public MojoRule rule = new MojoRule();
 
-        @Override
-        protected void after()
-        {
-        }
-    };
+    @Rule
+    public TestResources resources = new TestResources();
 
-    /**
-     * @throws Exception if any
-     */
+
+
     @Test
-    @Ignore
-    public void testSomething()
-            throws Exception {
+    public void testInvalidProject() throws Exception {
 
-        File pom = new File(getClass().getClassLoader().getResource("src/test/resources/pom.xml").toURI());
-
+        File projectCopy = this.resources.getBasedir( "project--valid" );
+        File pom = new File( projectCopy, "pom.xml");
         assertNotNull( pom );
-        assertTrue( pom.exists() );
-
-        TibcoDeployArchiveMojo myMojo = (TibcoDeployArchiveMojo) rule.lookupMojo( "touch", pom );
-        assertNotNull( myMojo );
-        myMojo.execute();
+        assertTrue( pom.exists());
 
 
+        TibcoDeployArchiveMojo mojo = (TibcoDeployArchiveMojo) this.rule.lookupMojo( "deploy-archive", pom );
+        assertNotNull( mojo );
+        mojo.execute();
     }
 
-    /** Do not need the MojoRule. */
-    @WithoutMojo
-    @Test
-    public void testSomethingWhichDoesNotNeedTheMojoAndProbablyShouldBeExtractedIntoANewClassOfItsOwn()
-    {
-
-    }
 }

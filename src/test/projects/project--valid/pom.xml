@@ -9,14 +9,6 @@
     <packaging>jar</packaging>
     <name>Test MyMojo</name>
 
-    <dependencies>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.12</version>
-            <scope>test</scope>
-        </dependency>
-    </dependencies>
 
     <build>
         <plugins>
@@ -25,7 +17,7 @@
                 <artifactId>tibco-deployment-maven-plugin</artifactId>
                 <configuration>
                     <!-- Specify the MyMojo parameter -->
-                    <outputDirectory>target/test-harness/project-to-test</outputDirectory>
+                    <!--<outputDirectory>target/test-harness/project-to-test</outputDirectory>-->
                 </configuration>
             </plugin>
         </plugins>
