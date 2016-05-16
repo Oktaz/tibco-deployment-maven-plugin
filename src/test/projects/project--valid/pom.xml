@@ -17,7 +17,8 @@
                 <artifactId>tibco-deployment-maven-plugin</artifactId>
                 <configuration>
                     <!-- Specify the MyMojo parameter -->
-                    <!--<outputDirectory>target/test-harness/project-to-test</outputDirectory>-->
+                    <url>http://localhost:8079/bw/v1/</url>
+                    <domain>MikeDomain</domain>
                 </configuration>
             </plugin>
         </plugins>

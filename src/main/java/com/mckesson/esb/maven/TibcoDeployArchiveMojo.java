@@ -16,6 +16,8 @@ import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
+import org.apache.maven.project.MavenProject;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -27,16 +29,29 @@ import java.io.InputStreamReader;
 @Mojo( name = "deploy-archive")
 public class TibcoDeployArchiveMojo extends AbstractMojo {
 
+    @Parameter( defaultValue = "${project}", readonly = true )
+    private MavenProject project;
+
+
+    @Parameter( required = true, readonly = true )
+    private String url;
+
+    @Parameter( required = true, readonly = true)
+    private String domain;
+
     public void execute() throws MojoExecutionException, MojoFailureException {
 
         getLog().info("Deploy Archive");
-        String url = "http://localhost:8079/bw/v1/";
+
+        getLog().info("Server Base URL:: " + url);
+        getLog().info("Domain:: " + domain);
 
         TibcoBusinessWorksClient client = new RestTibcoBusinessWorksClient(url);
 
         try {
-            File file = new File("/Users/Zatko/Desktop/TestModule_1.0.0.ear");
-            String deployResponse = client.deployArchive("MikeDomain", file);
+//            String filePath = project.getBuild().getOutputDirectory() + ;
+            File file  = project.getArtifact().getFile();
+            String deployResponse = client.deployArchive(domain, file);
             getLog().info("Archives::\n" + deployResponse);
 
         } catch (TibcoBusinessWorksClientException e) {
