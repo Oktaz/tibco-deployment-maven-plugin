@@ -103,9 +103,10 @@
                 <groupId>com.mckesson.esb.maven</groupId>
                 <artifactId>tibco-deployment-maven-plugin</artifactId>
                 <version>${project.version}</version>
-                <!--<configuration>-->
-                    <!--<url>http://localhost:8079/bw/v1/</url>-->
-                <!--</configuration>-->
+                <configuration>
+                    <url>http://localhost:8079/bw/v1/</url>
+                    <domain>MikeDomain</domain>
+                </configuration>
                 <!--<executions>-->
                     <!--<execution>-->
                         <!--<phase>compile</phase>-->

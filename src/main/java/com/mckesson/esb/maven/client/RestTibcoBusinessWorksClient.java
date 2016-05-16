@@ -1,8 +1,9 @@
-package com.mckesson.esb.maven;
+package com.mckesson.esb.maven.client;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.entity.ContentType;
@@ -15,6 +16,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.URI;
 import java.net.URISyntaxException;
 
 /**
@@ -24,6 +26,7 @@ public class RestTibcoBusinessWorksClient implements TibcoBusinessWorksClient {
 
     private String serverBaseUrl;
     private final String archivesUrl = "domains/%s/archives";
+    private final String browseDomainsUrl = "browse/archives";
     private static final Logger logger = LoggerFactory.getLogger(RestTibcoBusinessWorksClient.class);
 
     public RestTibcoBusinessWorksClient(String serverBaseUrl) {
@@ -82,6 +85,45 @@ public class RestTibcoBusinessWorksClient implements TibcoBusinessWorksClient {
     }
 
     public String getArchives(String domain) throws TibcoBusinessWorksClientException {
-        return "";
+
+        HttpClient client = HttpClientBuilder.create().build();
+
+        try {
+            String url = serverBaseUrl + browseDomainsUrl;
+
+            URIBuilder uriBuilder = null;
+            try {
+                uriBuilder = new URIBuilder(url);
+            } catch (URISyntaxException e) {
+                throw new TibcoBusinessWorksClientException(e);
+            }
+            uriBuilder.setParameter("domain", domain);
+
+            URI build = uriBuilder.build();
+            logger.info("Get Archives URL :: " + build);
+            HttpGet request = new HttpGet(build);
+
+
+            // add request header
+//            request.addHeader("User-Agent", USER_AGENT);
+            HttpResponse response = client.execute(request);
+
+            System.out.println("Response Code : "
+                    + response.getStatusLine().getStatusCode());
+
+            BufferedReader rd = new BufferedReader(
+                    new InputStreamReader(response.getEntity().getContent()));
+
+            StringBuffer result = new StringBuffer();
+            String line = "";
+            while ((line = rd.readLine()) != null) {
+                result.append(line);
+            }
+
+            return "" + result;
+
+        } catch(Exception e) {
+            throw new TibcoBusinessWorksClientException(e);
+        }
     }
 }

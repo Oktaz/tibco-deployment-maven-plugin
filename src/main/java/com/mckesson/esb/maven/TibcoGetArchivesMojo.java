@@ -3,24 +3,21 @@ package com.mckesson.esb.maven;
 import com.mckesson.esb.maven.client.RestTibcoBusinessWorksClient;
 import com.mckesson.esb.maven.client.TibcoBusinessWorksClient;
 import com.mckesson.esb.maven.client.TibcoBusinessWorksClientException;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
-import org.apache.maven.project.MavenProject;
 
-import java.io.File;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 
-/**
- *
- */
-@Mojo( name = "deploy-archive")
-public class TibcoDeployArchiveMojo extends AbstractMojo {
-
-    @Parameter( defaultValue = "${project}", readonly = true )
-    private MavenProject project;
-
+@Mojo( name = "get-archives")
+public class TibcoGetArchivesMojo extends AbstractMojo {
 
     @Parameter( required = true, readonly = true )
     private String url;
@@ -30,22 +27,20 @@ public class TibcoDeployArchiveMojo extends AbstractMojo {
 
     public void execute() throws MojoExecutionException, MojoFailureException {
 
-        getLog().info("Deploy Archive");
+        getLog().info("Get Archives");
 
         getLog().info("Server Base URL:: " + url);
         getLog().info("Domain:: " + domain);
 
         TibcoBusinessWorksClient client = new RestTibcoBusinessWorksClient(url);
-
         try {
-//            String filePath = project.getBuild().getOutputDirectory() + ;
-            File file  = project.getArtifact().getFile();
-            String deployResponse = client.deployArchive(domain, file);
-            getLog().info("Archives::\n" + deployResponse);
-
+            String archives = client.getArchives(domain);
+            getLog().info(archives);
         } catch (TibcoBusinessWorksClientException e) {
             getLog().error(e);
+            throw new MojoExecutionException(e.getMessage(), e);
         }
+
 
     }
 }

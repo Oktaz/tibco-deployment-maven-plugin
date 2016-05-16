@@ -1,4 +1,4 @@
-package com.mckesson.esb.maven;
+package com.mckesson.esb.maven.client;
 
 /**
  *
